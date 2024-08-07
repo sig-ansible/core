@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+addopts = ["-vvv", "-n", "2", "--log-level", "WARNING", "--color", "yes"]
+filterwarnings = ['ignore:AnsibleCollectionFinder has already been configured']
+testpaths = ["tests"]
+
+[tool.poetry]
+name = "sigcorp-core"
+version = "0.1.0"
+description = ""
+authors = ["Dan Boitnott <boitnott@sigcorp.com>"]
+readme = "README.md"
+packages = [{include = "sigcorp"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+ansible-dev-tools = "^24.7.2"
+tox-ansible = "^24.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
