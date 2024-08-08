@@ -18,6 +18,7 @@ packages = [{include = "sigcorp"}]
 python = "^3.11"
 ansible-dev-tools = "^24.7.2"
 tox-ansible = "^24.7.0"
+tox-docker = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]

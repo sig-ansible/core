@@ -31,6 +31,9 @@
             which
             nushell
 
+            # Run github actions locally
+            act
+
             # Make sure nix works within the shell
             nixStatic
 
