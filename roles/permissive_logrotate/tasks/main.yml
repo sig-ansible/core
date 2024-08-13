@@ -1,0 +1,5 @@
+---
+- name: Set logrotate to permissive in SELinux
+  community.general.selinux_permissive:
+    domain: logrotate_t
+    permissive: true

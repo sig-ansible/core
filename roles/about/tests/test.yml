@@ -1,0 +1,6 @@
+---
+- name: Test the 'about' role
+  hosts: localhost
+  remote_user: root
+  roles:
+    - about

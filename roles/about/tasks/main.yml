@@ -1,0 +1,12 @@
+---
+- name: Create system information directory
+  ansible.builtin.file:
+    path: "{{ about_root }}"
+    state: directory
+    mode: "0755"
+
+- name: Create about command
+  ansible.builtin.template:
+    src: about.sh
+    dest: "{{ about_cmd }}"
+    mode: "755"

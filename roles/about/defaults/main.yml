@@ -1,0 +1,5 @@
+---
+about_login_banner: true
+
+about_root: /etc/about
+about_cmd: /usr/local/bin/about

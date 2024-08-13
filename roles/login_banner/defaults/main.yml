@@ -1,0 +1,4 @@
+---
+login_banner_command_enabled: true
+login_banner_figlet_font: lean
+login_banner_command_path: /usr/local/bin/login_banner.sh

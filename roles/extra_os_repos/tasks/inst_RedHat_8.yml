@@ -1,0 +1,55 @@
+---
+- name: Find optional RPM repos
+  ansible.builtin.shell:
+    cmd: >
+      set -o pipefail && \
+      yum repolist disabled |grep optional-rpms |cut -d ' ' -f 1 |cut -d / -f 1
+  args:
+    warn: false
+  changed_when: false
+  check_mode: false  # This is read-ony and ok to run in check mode
+  register: res
+  tags: packages
+
+- name: Enable optional RPMs in Yum
+  ansible.builtin.command: yum-config-manager --enable {{ item }}
+  with_items: "{{ res.stdout_lines }}"
+  changed_when: len(res.stdout_lines) > 0
+  tags: packages
+
+# - name: Install EPEL GPG key
+#   rpm_key:
+#     key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+#     fingerprint: 94E279EB8D8F25B21810ADF121EA45AB2F86D6A1
+#   tags: packages
+
+# - name: Install EPEL
+#   yum:
+#     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+#   tags: packages
+
+- name: Check for RPM repositories to enable
+  ansible.builtin.stat:
+    path: "/etc/yum.repos.d/{{ item.name }}.repo"
+  loop:
+    - name: CentOS-Stream-Extras
+      section: extras
+    - name: CentOS-Stream-PowerTools
+      section: powertools
+  register: res
+  tags: packages
+
+- name: Enable RPM repositories
+  community.general.ini_file:
+    path: "{{ item.stat.path }}"
+    section: "{{ item.item.section }}"
+    option: enabled
+    value: '1'
+    backup: true
+    no_extra_spaces: true
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ res.results }}"
+  when: item.stat.exists
+  tags: packages

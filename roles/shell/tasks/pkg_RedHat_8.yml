@@ -1,0 +1,48 @@
+---
+- name: Install shell utilities
+  ansible.builtin.dnf:
+    name:
+      - lnav
+      - lsof
+      - nload
+      - chrony
+      - dnf-automatic
+      - net-tools
+      - mlocate
+      - screen
+      - nmap
+      - curl
+      - wget
+      - rng-tools
+      - unzip
+      - zip
+      - strace
+      - lsof
+      - nfs-utils
+      - bind-utils
+      - htop
+      - tmux
+      - git
+      - figlet
+      - at
+  tags: packages
+
+- name: Install AWS-related packages
+  when: aws_region is defined
+  block:
+    - name: Install AWS dependency libraries utilities
+      ansible.builtin.dnf:
+        name:
+          - python3-dns
+          - python3-pyOpenSSL
+      tags: packages
+
+    - name: Install AWS pip packages
+      ansible.builtin.pip:
+        executable: pip3
+        name:
+          - urllib3
+          - chardet
+          - requests
+          - awscli
+      tags: packages

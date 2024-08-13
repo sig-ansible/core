@@ -11,7 +11,6 @@ repos:
       - id: check-added-large-files
       - id: check-case-conflict
       - id: check-executables-have-shebangs
-      - id: check-shebang-scripts-are-executable
       - id: check-merge-conflict
       - id: destroyed-symlinks
       - id: detect-private-key
@@ -46,3 +45,13 @@ repos:
     rev: v2.3.0
     hooks:
       - id: codespell
+
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v24.7.0
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$
+        name: Ansible Lint
+        description: Run configurations on .ansible-lint file
+        verbose: true
+        # args: [-p, ./ansible/*]

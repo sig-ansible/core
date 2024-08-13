@@ -1,0 +1,20 @@
+---
+- name: Install figlet
+  ansible.builtin.package:
+    name: figlet
+  tags: env, packages
+
+- name: Install login banner profile extensions
+  ansible.builtin.template:
+    src: login_banner_env.sh
+    dest: /etc/profile.d/x_login_banner.sh
+    mode: "0644"
+  tags: env
+
+- name: Create login banner script
+  ansible.builtin.template:
+    src: login_banner.sh
+    dest: "{{ login_banner_command_path }}"
+    mode: "0755"
+  when: login_banner_command_enabled
+  tags: env

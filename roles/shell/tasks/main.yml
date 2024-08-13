@@ -1,0 +1,15 @@
+---
+- name: Install packages
+  ansible.builtin.include_tasks: >
+    pkg_{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml
+  tags: always
+
+- name: Install profile extensions
+  ansible.builtin.template:
+    src: "{{ item.template }}"
+    dest: /etc/profile.d/{{ item.alias | default(item.template) }}
+    mode: "0644"
+  loop:
+    - template: user_profile.d.sh
+      alias: z_user_profile.d.sh
+  tags: env

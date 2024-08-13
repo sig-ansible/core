@@ -1,0 +1,20 @@
+---
+- name: Disable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: stopped
+    enabled: false
+  tags: iptables
+
+- name: Disable iptables service
+  ansible.builtin.systemd:
+    name: iptables
+    state: stopped
+    enabled: false
+  tags: iptables
+
+- name: Flush iptables filter table
+  ansible.builtin.iptables:
+    table: filter
+    flush: true
+  tags: iptables

@@ -1,0 +1,6 @@
+---
+- name: Enable rngd
+  ansible.builtin.service:
+    name: rngd
+    state: started
+    enabled: true

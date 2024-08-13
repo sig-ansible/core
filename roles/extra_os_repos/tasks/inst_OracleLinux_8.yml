@@ -1,0 +1,18 @@
+---
+- name: Find optional RPM repos
+  ansible.builtin.shell:
+    cmd: >
+      set -o pipefail && \
+      yum repolist disabled |grep codeready_builder |cut -d ' ' -f 1 |cut -d / -f 1
+  args:
+    warn: false
+  changed_when: false
+  check_mode: false  # This is read-ony and ok to run in check mode
+  register: res
+  tags: packages
+
+- name: Enable optional RPMs in Yum
+  ansible.builtin.command: yum-config-manager --enable {{ item }}
+  with_items: "{{ res.stdout_lines }}"
+  changed_when: len(res.stdout_lines) > 0
+  tags: packages
