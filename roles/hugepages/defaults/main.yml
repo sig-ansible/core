@@ -1,0 +1,2 @@
+---
+hugepages_memlock_limit: "{{ ansible_memtotal_mb * 0.9 * 1024 }}"

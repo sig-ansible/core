@@ -1,0 +1,52 @@
+---
+- name: Set memlock limit for hugepages
+  community.general.pam_limits:
+    backup: true
+    domain: "*"
+    limit_item: memlock
+    limit_type: "-"
+    value: "{{ hugepages_memlock_limit | int }}"
+
+- name: Create root scripts directory
+  ansible.builtin.file:
+    path: /root/scripts
+    state: directory
+    mode: "0700"
+
+- name: Create hugepages tuning script
+  ansible.builtin.template:
+    src: hugepages_settings.sh
+    dest: /root/scripts/hugepages_settings.sh
+    mode: "0755"
+
+- name: Run hugepages tuning script
+  ansible.builtin.command: /root/scripts/hugepages_settings.sh
+  register: res
+  changed_when: false
+  tags: never, update_hugepages
+
+- name: INFO - Hugepages recommendations
+  ansible.builtin.debug:
+    msg: "vm.nr_hugepages = {{ res.stdout_lines[1] }}"
+  tags: never, update_hugepages
+
+- name: Set vm.nr_hugepages
+  ansible.posix.sysctl:
+    name: vm.nr_hugepages
+    value: "{{ res.stdout_lines[1] }}"
+    reload: false
+  register: res
+  notify: recommend_reboot
+  tags: never, update_hugepages
+
+- name: INFO - Hugepages config
+  ansible.builtin.debug:
+    var: res
+  tags: never, update_hugepages
+
+- name: IMPORTANT - Hugepages setup
+  ansible.builtin.debug:
+    msg: |
+      To update vm.nr_hugepages, make sure Oracle database(s) are running and
+      re-run Ansible playbook with the tag 'update_hugepages' and reboot the
+      server afterward.
