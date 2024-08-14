@@ -15,27 +15,14 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          # buildInputs = with pkgs; [
-          #   poetry
-          # ];
           packages = with pkgs; [
-            nix-search-cli
             pre-commit
-            curl
-            git
-            jq
             just
-            unzip
             watchexec
-            wget
-            which
             nushell
 
             # Run github actions locally
             act
-
-            # Make sure nix works within the shell
-            nixStatic
 
             # Python
             poetry
