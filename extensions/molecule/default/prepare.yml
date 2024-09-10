@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Install preprequisite packages
+      ansible.builtin.raw: yum install -y python3
+      changed_when: false

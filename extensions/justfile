@@ -1,0 +1,5 @@
+check:
+    molecule check
+
+converge:
+    molecule converge

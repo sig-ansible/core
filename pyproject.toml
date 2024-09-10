@@ -20,6 +20,10 @@ ansible-dev-tools = "^24.7.2"
 tox-ansible = "^24.7.0"
 tox-docker = "^5.0.0"
 
+# Pin development to ansible-core 2.16 because:
+# https://www.jeffgeerling.com/blog/2024/newer-versions-ansible-dont-work-rhel-8
+ansible-core = "2.16"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

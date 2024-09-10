@@ -41,13 +41,13 @@ test = ["coverage", "pip-tools", "pytest (>=7.2.0)", "pytest-mock", "pytest-plus
 
 [[package]]
 name = "ansible-core"
-version = "2.17.2"
+version = "2.16.0"
 description = "Radically simple IT automation"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "ansible_core-2.17.2-py3-none-any.whl", hash = "sha256:d51af721c35c00308d5786878497a346ccdd764302cb793f3b6b8d60038f9a6c"},
-    {file = "ansible_core-2.17.2.tar.gz", hash = "sha256:3dfa15249069ea0d001257902c968ddf9bb71d965769b8802bce85187556c5d8"},
+    {file = "ansible-core-2.16.0.tar.gz", hash = "sha256:b4a6c60fbc2f51e3ae68ec733c931ef957a04d7c8c92aa39242990b0f8adf149"},
+    {file = "ansible_core-2.16.0-py3-none-any.whl", hash = "sha256:6b4870ac65b708953e1509b8ccca669731a17d2beadabd8208c9f90d189058ca"},
 ]
 
 [package.dependencies]
@@ -1716,4 +1716,4 @@ dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "43e248309c5a19e8e98e79f2a7222d1dec7e0045ca13222227e7ba0938958940"
+content-hash = "276df9af8ad97cc513225d14f2f138f880e38de15bd29696087e39ad89c73b99"

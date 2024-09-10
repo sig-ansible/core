@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  # gather_facts: false
+
+  roles:
+    - role: sigcorp.core.about
+
+  tasks:
+    - name: Finishing notice
+      ansible.builtin.debug:
+        msg: "Converge complete."
