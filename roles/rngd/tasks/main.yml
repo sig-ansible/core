@@ -4,3 +4,4 @@
     name: rngd
     state: started
     enabled: true
+  when: ansible_service_mgr not in ['sleep']

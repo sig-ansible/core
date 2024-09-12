@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: package_specs
+    vars:
+      package_specs: "{{ rngd_package_specs }}"

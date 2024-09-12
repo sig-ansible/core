@@ -1,0 +1,19 @@
+---
+openjdk_major_versions:
+  8:
+    packages:
+      - java-1.8.0-openjdk
+      - java-1.8.0-openjdk-devel
+    java_home: /usr/lib/jvm/jre-1.8.0
+
+  11:
+    packages:
+      - java-11-openjdk
+      - java-11-openjdk-devel
+    java_home: /usr/lib/jvm/java-11-openjdk
+
+openjdk_version_spec: "{{ openjdk_major_versions[openjdk_major_version] }}"
+openjdk_packages: "{{ openjdk_version_spec['packages'] }}"
+openjdk_java_home: "{{ openjdk_version_spec['java_home'] }}"
+
+tomcat_java_home: "{{ openjdk_java_home }}"  # noqa: var-naming[no-role-prefix]

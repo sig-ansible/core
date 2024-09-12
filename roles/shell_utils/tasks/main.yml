@@ -1,9 +1,4 @@
 ---
-- name: Install packages
-  ansible.builtin.include_tasks: >
-    pkg_{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml
-  tags: always
-
 - name: Install profile extension
   ansible.builtin.template:
     src: "{{ item.template }}"

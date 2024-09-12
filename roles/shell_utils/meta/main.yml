@@ -1,0 +1,12 @@
+---
+dependencies:
+  - role: extra_os_repos
+
+  - role: package_specs
+    vars:
+      package_specs: "{{ shell_utils_package_specs }}"
+
+  - role: package_specs
+    vars:
+      package_specs: "{{ shell_utils_aws_package_specs }}"
+    when: aws_region is defined

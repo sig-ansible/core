@@ -1,0 +1,4 @@
+---
+- name: Defer to yum tasks
+  ansible.builtin.include_tasks: "install_yum.yml"
+  tags: always

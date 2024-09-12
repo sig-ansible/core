@@ -1,0 +1,5 @@
+---
+- name: Apply distribution-specific steps
+  ansible.builtin.include_tasks: >-
+    inst_{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml
+  tags: always

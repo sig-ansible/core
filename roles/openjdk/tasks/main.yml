@@ -1,0 +1,4 @@
+---
+- name: "Include installation tasks"
+  ansible.builtin.include_tasks: "install_{{ ansible_pkg_mgr }}.yml"
+  tags: always

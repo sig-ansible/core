@@ -1,0 +1,18 @@
+---
+- name: Build package list
+  ansible.builtin.debug:
+    msg: >-
+      {{
+      item.family['ansible_os_family']
+      | default(item.distro['ansible_distribution']['default'])
+      | default(item.distrover['ansible_distribution']['ansible_distribution_major_version'])
+      | default(item.name)
+      }}
+  loop: "{{ package_specs }}"
+  register: res
+  tags: packages
+
+- name: Install OS packages
+  ansible.builtin.package:
+    name: "{{ res.results | map(attribute='msg') }}"
+  tags: packages

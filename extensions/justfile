@@ -1,5 +1,5 @@
 check:
     molecule check
 
-converge:
-    molecule converge
+converge *ARGS:
+    molecule converge -- {{ARGS}}

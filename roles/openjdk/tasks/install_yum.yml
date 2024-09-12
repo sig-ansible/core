@@ -1,0 +1,5 @@
+---
+- name: Install OpenJDK packages
+  ansible.builtin.dnf:
+    name: "{{ openjdk_packages }}"
+  tags: packages

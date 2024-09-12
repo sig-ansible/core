@@ -1,0 +1,7 @@
+---
+argument_specs:
+  main:
+    options:
+      login_banner_text:
+        type: str
+        required: true

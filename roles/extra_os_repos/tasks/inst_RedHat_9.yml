@@ -54,7 +54,7 @@
 
 - name: Add EPEL repository
   ansible.builtin.dnf:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
     disable_gpg_check: true
   when: extra_os_repos_enable_epel
   tags: packages

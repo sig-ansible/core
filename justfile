@@ -14,4 +14,4 @@ watch-pre-commit *ARGS:
 
 # Watch for file changes and run molecule converge
 watch-converge *ARGS:
-    watchexec just extensions/converge
+    watchexec just extensions/converge {{ARGS}}

@@ -1,0 +1,40 @@
+---
+# Pre-create the skiring user so that it's ID is in the lower range.
+- name: Create skiring user
+  ansible.builtin.user:
+    name: skiring
+
+- name: Install Skiring
+  ansible.builtin.dnf:
+    name: "{{ skiring_rpm_url }}"
+    disable_gpg_check: true
+
+  tags: skiring
+
+# The Skiring RPM sets up the user and permissions, but it's possible that
+# post facto UID changes could affect this. It's critical that Skiring
+# permissions are correct, so we re-enforce them here.
+
+- name: Set permissions for Skiring binary
+  ansible.builtin.file:
+    state: file
+    path: /usr/bin/skiring
+    owner: skiring
+    mode: '4755'
+  tags: skiring
+
+- name: Set permissions for Skiring configuration folder
+  ansible.builtin.file:
+    state: directory
+    path: /etc/skiring
+    owner: skiring
+    mode: '0700'
+  tags: skiring
+
+- name: Set permissions for Skiring ring
+  ansible.builtin.file:
+    state: file
+    path: /etc/skiring/ring
+    owner: skiring
+    mode: '0600'
+  tags: skiring

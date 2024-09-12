@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BANNER_STRING="{{ common_login_banner_text }}"
+BANNER_STRING="{{ login_banner_text }}"
 
 # Font Examples: http://www.figlet.org/examples.html
 # NOTE: Not all fonts are available by default
@@ -8,7 +8,7 @@ BANNER_STRING="{{ common_login_banner_text }}"
 # To get a sample of each font on the system:
 #
 # for F in /usr/share/figlet/*.flf; do echo $(basename $F .flf); figlet -f $(basename $F .flf) "SITE"; done |less
-FIGLET_FONT="{{ common_login_banner_figlet_font }}"
+FIGLET_FONT="{{ login_banner_figlet_font }}"
 
 INFO_LINE_WIDTH=8
 

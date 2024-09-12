@@ -1,0 +1,34 @@
+---
+shell_utils_package_specs:
+  - name: bind-utils
+  - name: curl
+  - name: figlet
+  - name: git
+  - name: htop
+  - name: lnav
+  - name: lsof
+  - name: mlocate
+  - name: net-tools
+  - name: nfs-utils
+  - name: nload
+  - name: nmap
+  - name: python3-lxml
+  - name: rng-tools
+  - name: rsync
+  - name: screen
+  - name: strace
+  - name: tar
+  - name: tmux
+  - name: unzip
+  - name: wget
+  - name: zip
+
+shell_utils_aws_package_specs:
+  - name: python3-dns
+  - name: python3-pyOpenSSL
+
+shell_utils_aws_pip_packages:
+  - urllib3
+  - chardet
+  - requests
+  - awscli

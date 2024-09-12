@@ -2,8 +2,7 @@
 - name: Find optional RPM repos  # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell:
     cmd: |
-      yum repolist disabled |grep -s codeready_builder |cut -d ' ' -f 1 |cut -d / -f 1
-  failed_when: "res.rc != 0 and res.stderr_lines > 0"
+      yum repolist disabled |grep codeready_builder |cut -d ' ' -f 1 |cut -d / -f 1
   changed_when: false
   check_mode: false  # This is read-ony and ok to run in check mode
   register: res
@@ -17,7 +16,7 @@
 
 - name: Add EPEL repository
   ansible.builtin.dnf:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
     disable_gpg_check: true
   when: extra_os_repos_enable_epel
   tags: packages
