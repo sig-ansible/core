@@ -1,48 +1,27 @@
 ---
 - name: Converge
   hosts: all
-
-  vars:
-    login_banner_text: TEST
-
-  pre_tasks:
-    - name: Override distribution facts for RHEL testing (TEMP WORKAROUND)
-      ansible.builtin.set_fact:
-        ansible_distribution: RedHat
-      when: "'rhel' in inventory_hostname"
-
-    - name: Inject AWS facts
-      ansible.builtin.set_fact:
-        aws_region: us-east-1
-      when: "'aws' in inventory_hostname"
-
-  roles:
-    - role: sigcorp.core.extra_os_repos
-    - role: sigcorp.core.about
-    - role: sigcorp.core.login_banner
-    - role: sigcorp.core.skiring
-
-    - role: sigcorp.core.openjdk
-      vars:
-        openjdk_major_version: 8
-    - role: sigcorp.core.openjdk
-      vars:
-        openjdk_major_version: 11
-
-    # Need to add some fixes for testing in containers because systemd isn't running
-    # - role: sigcorp.core.disable_firewall
-
-    # Can't test on Ansible 2.16
-    # - role: sigcorp.core.permissive_logrotate
-    # - role: sigcorp.core.hugepages
-
-    # Can't test in (RedHat UBI) containers
-    - role: sigcorp.core.rngd
-    - role: sigcorp.core.shell_utils
+  vars_files:
+    - vars/tests.yml
 
   tasks:
-    - name: Finishing notice
-      ansible.builtin.debug:
-        msg: "Converge complete"
+    - name: "Compute role spec"
+      ansible.builtin.set_fact:
+        molecule_test_spec: >-
+          {{ {'role': 'sigcorp.core.' + molecule_test_name }
+             | combine(molecule_tests[molecule_test_name]) }}
 
-    # - debug: var=ansible_facts
+    - name: "Set test vars"
+      ansible.builtin.set_fact:
+        "{{ item.key }}": "{{ item.value }}"  # noqa: var-naming[no-jinja]
+      loop: "{{ molecule_test_spec.vars | default({}) | dict2items }}"
+
+    - name: "Dump Test Info"
+      ansible.builtin.debug:
+        msg:
+          role: "{{ molecule_test_spec.role }}"
+          vars: "{{ molecule_test_spec.vars | default({}) }}"
+
+    - name: "Apply the role"
+      ansible.builtin.include_role:
+        name: "{{ molecule_test_spec.role }}"

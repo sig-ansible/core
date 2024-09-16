@@ -1,5 +1,42 @@
-check:
-    molecule check
+@help:
+    just --list
 
-converge *ARGS:
-    molecule converge -- {{ARGS}}
+list-tests:
+    #!/usr/bin/env nu
+    open "molecule/default/vars/tests.yml"
+    | get molecule_tests
+    | items {|k, v| $k}
+    | str join "\n"
+
+_mol CMD TEST_NAME *ARGS:
+    export TEST_NAME="{{TEST_NAME}}" && molecule {{CMD}} {{ARGS}}
+
+_mol_all CMD *ARGS:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    for T in $(just list-tests); do
+      just _mol {{CMD}} "$T" {{ARGS}}
+    done
+
+@create TEST_NAME *ARGS:
+    just _mol create {{TEST_NAME}} {{ARGS}}
+
+@converge TEST_NAME *ARGS:
+    just _mol converge {{TEST_NAME}} {{ARGS}}
+
+@converge-all *ARGS:
+    just _mol_all converge {{ARGS}}
+
+@destroy TEST_NAME *ARGS:
+    just _mol destroy {{TEST_NAME}} {{ARGS}}
+
+@check TEST_NAME *ARGS:
+    just _mol check {{TEST_NAME}} {{ARGS}}
+
+@check-all *ARGS:
+    just _mol_all check {{ARGS}}
+
+@test TEST_NAME:
+    just destroy {{TEST_NAME}}
+    just _mol reset {{TEST_NAME}}
+    just check {{TEST_NAME}}

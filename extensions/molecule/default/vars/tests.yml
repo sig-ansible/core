@@ -1,0 +1,16 @@
+---
+molecule_tests:
+  about:
+
+  login_banner:
+    vars:
+      login_banner_text: Molecule
+
+  openjdk_8:
+    role: sigcorp.core.openjdk
+    vars:
+      openjdk_major_version: 8
+  openjdk_11:
+    role: sigcorp.core.openjdk
+    vars:
+      openjdk_major_version: 11

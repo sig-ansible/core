@@ -25,7 +25,6 @@
         timeout: 300
       loop: "{{ molecule_yml.platforms }}"
 
-
     - name: Apply package updates
       community.docker.docker_container_exec:
         container: "{{ item.name }}"

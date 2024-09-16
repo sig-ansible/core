@@ -1,12 +1,12 @@
 ---
 openjdk_major_versions:
-  8:
+  "8":
     packages:
       - java-1.8.0-openjdk
       - java-1.8.0-openjdk-devel
     java_home: /usr/lib/jvm/jre-1.8.0
 
-  11:
+  "11":
     packages:
       - java-11-openjdk
       - java-11-openjdk-devel

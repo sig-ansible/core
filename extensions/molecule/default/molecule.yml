@@ -4,6 +4,11 @@ dependency:
   options:
     requirements-file: requirements.yml
 
+provisioner:
+  name: ansible
+  ansible_args:
+    - -e molecule_test_name="${TEST_NAME}"
+
 platforms:
   - name: molecule-rhel-8
     image: oraclelinux:8  # TEMPORARY WORKAROUND
@@ -14,15 +19,4 @@ platforms:
   - name: molecule-oracle-8
     image: oraclelinux:8
   - name: molecule-oracle-9
-    image: oraclelinux:9
-
-  - name: molecule-rhel-8-aws
-    image: oraclelinux:8  # TEMPORARY WORKAROUND
-    # image: redhat/ubi8-init
-  - name: molecule-rhel-9-aws
-    # image: redhat/ubi9
-    image: oraclelinux:9  # TEMPORARY WORKAROUND
-  - name: molecule-oracle-8-aws
-    image: oraclelinux:8
-  - name: molecule-oracle-9-aws
     image: oraclelinux:9
