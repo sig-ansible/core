@@ -3,6 +3,18 @@ molecule_tests:
   about:
   extra_os_repos:
 
+  has_oracle:
+    vars:
+      oracle_gid: 901
+      oracle_uid: 901
+      oracle_os_groups:
+        oinstall: 912
+        dba: 913
+        oper: 914
+      tnsnames_entries:
+        - sid: FAKE
+          host: not.real
+
   login_banner:
     vars:
       login_banner_text: Molecule

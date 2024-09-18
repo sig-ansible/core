@@ -1,0 +1,6 @@
+== Oracle Environment
+
+Aliases are provided for setting up Oracle environment for various instances.
+
+To set environment:
+   $ <ORACLE_SID>

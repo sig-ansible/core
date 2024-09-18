@@ -1,0 +1,114 @@
+---
+##
+## This shouldn't be necessary, but ansible.builtin.group does not consistently
+## check whether the group already exists or not so we get false-positives under
+## "changed."
+##
+- name: Fetch group list
+  ansible.builtin.getent:
+    database: group
+  register: all_groups
+  tags: osuser
+
+- name: Update current group list
+  ansible.builtin.set_fact:
+    all_os_groups: "{{ all_groups.ansible_facts.getent_group | dict2items | map(attribute='key') }}"
+  tags: osuser
+
+- name: Create oracle group
+  ansible.builtin.group:
+    name: "{{ oracle_group }}"
+    gid: "{{ oracle_gid }}"
+    system: true
+    state: present
+  when: oracle_group not in all_os_groups
+  tags: osuser
+
+- name: Create oracle user
+  ansible.builtin.user:
+    name: "{{ oracle_user }}"
+    uid: "{{ oracle_uid }}"
+    group: "{{ oracle_group }}"
+    shell: "{{ oracle_user_shell }}"
+    system: true
+  tags: osuser
+
+- name: Create oracle O/S groups
+  ansible.builtin.group:
+    name: "{{ item.key }}"
+    gid: "{{ item.value }}"
+    system: true
+  with_dict: "{{ oracle_os_groups }}"
+  tags: osuser
+
+- name: Assign oracle O/S groups
+  ansible.builtin.user:
+    name: "{{ oracle_user }}"
+    append: true
+    groups: ["{{ item.key }}"]
+  with_dict: "{{ oracle_os_groups }}"
+  tags: osuser
+
+- name: Assign extra oracle O/S groups
+  ansible.builtin.user:
+    name: "{{ oracle_user }}"
+    append: true
+    groups: "{{ oracle_user_extra_groups }}"
+  when: oracle_user_extra_groups is defined
+
+- name: Add EM SSH key
+  ansible.posix.authorized_key:
+    user: "{{ oracle_user }}"
+    key: "{{ em_oracle_ssh_public_key }}"
+  when: em_oracle_ssh_public_key is defined
+  tags:
+    - ssh_keys
+    - osuser
+
+- name: Add tnsnames.ora
+  ansible.builtin.template:
+    src: tnsnames.j2
+    dest: "{{ tnsnames_path }}"
+    backup: true
+    lstrip_blocks: true
+    mode: "0644"
+  when: tnsnames_enabled
+  tags: tnsnames
+
+- name: Add tnsnames.ora link
+  ansible.builtin.file:
+    src: "{{ tnsnames_path }}"
+    dest: "{{ item }}"
+    state: link
+  with_items: "{{ tnsnames_links }}"
+  when: tnsnames_enabled
+  tags: tnsnames
+
+- name: Add oraenv aliases to profile
+  ansible.builtin.template:
+    src: oraenv_aliases.sh
+    dest: /etc/profile.d/z_oraenv_aliases.sh
+    mode: "0644"
+  when: oraenv_aliases
+  tags: env
+
+- name: Add oracle prompt change to profile
+  ansible.builtin.template:
+    src: oracle_prompt.sh
+    dest: /etc/profile.d/oracle_prompt.sh
+    mode: "0644"
+  tags: env
+
+- name: Create /etc/about
+  ansible.builtin.file:
+    path: /etc/about
+    state: directory
+    mode: "0755"
+  tags: about
+
+- name: Create about info
+  ansible.builtin.template:
+    src: about.txt
+    dest: /etc/about/has_oracle.txt
+    mode: "0644"
+  tags: about

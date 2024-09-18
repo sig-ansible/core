@@ -1,0 +1,10 @@
+---
+oracle_user: oracle  # noqa: var-naming[no-role-prefix]
+oracle_group: oinstall  # noqa: var-naming[no-role-prefix]
+oracle_user_shell: /bin/bash  # noqa: var-naming[no-role-prefix]
+
+tnsnames_enabled: true  # noqa: var-naming[no-role-prefix]
+tnsnames_path: /etc/tnsnames.ora  # noqa: var-naming[no-role-prefix]
+tnsnames_links: []  # noqa: var-naming[no-role-prefix]
+
+oraenv_aliases: true  # noqa: var-naming[no-role-prefix]

@@ -1,0 +1,37 @@
+---
+argument_specs:
+  main:
+    options:
+      oracle_gid:
+        required: true
+        type: int
+      oracle_uid:
+        required: true
+        type: int
+
+      oracle_os_groups:
+        required: true
+        type: dict
+
+      tnsnames_entries:
+        required: true
+        type: list
+        elements: dict
+        options:
+          connect_data_extras:
+            type: list
+            elements: str
+          alias:
+            type: str
+          host:
+            required: true
+            type: str
+          port:
+            type: int
+          service_name:
+            type: str
+          connect_sid:
+            type: str
+          sid:
+            required: true
+            type: str
