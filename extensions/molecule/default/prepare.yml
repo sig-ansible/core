@@ -7,13 +7,3 @@
     - name: Install preprequisite packages
       ansible.builtin.raw: yum install -y python3
       changed_when: false
-
-    - name: Override distribution facts for RHEL testing (TEMP WORKAROUND)
-      ansible.builtin.set_fact:
-        ansible_distribution: RedHat
-      when: "'rhel' in inventory_hostname"
-
-    - name: Inject AWS facts
-      ansible.builtin.set_fact:
-        aws_region: us-east-1
-      when: "'aws' in inventory_hostname"

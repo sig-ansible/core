@@ -12,6 +12,7 @@ provisioner:
 platforms:
   - name: molecule-rhel-8
     image: oraclelinux:8  # TEMPORARY WORKAROUND
+
     # image: redhat/ubi8-init
   - name: molecule-rhel-9
     # image: redhat/ubi9

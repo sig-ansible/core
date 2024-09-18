@@ -2,15 +2,33 @@
 - name: Build package list
   ansible.builtin.debug:
     msg: >-
-      {{
-      item.family['ansible_os_family']
-      | default(item.distro['ansible_distribution']['default'])
-      | default(item.distrover['ansible_distribution']['ansible_distribution_major_version'])
-      | default(item.name)
+      {{ (item.distro_ver[ansible_distribution] | default({}))[ansible_distribution_major_version]
+         | default((item.distro_ver[ansible_distribution] | default({}))['default'])
+         | default(item.distro[ansible_distribution])
+         | default(item.distro['default'])
+         | default(item.family[ansible_os_family])
+         | default(item.family['default'])
+         | default(item.name)
       }}
   loop: "{{ package_specs }}"
   register: res
   tags: packages
+
+# - name: Build package list
+#   ansible.builtin.debug:
+#     msg: >-
+#       {{
+#       item.distro_ver['ansible_distribution']['ansible_distribution_major_version']
+#       | default(item.distro['ansible_distribution']['default'])
+#       | default(item.family['ansible_os_family'])
+#       | default(item.name)
+#       }}
+#   loop: "{{ package_specs }}"
+#   register: res
+#   tags: packages
+
+# - debug:
+#     msg: "{{ res.results | map(attribute='msg') }}"
 
 - name: Install OS packages
   ansible.builtin.package:

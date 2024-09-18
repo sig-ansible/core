@@ -1,6 +1,7 @@
 ---
 molecule_tests:
   about:
+  extra_os_repos:
 
   login_banner:
     vars:
@@ -14,3 +15,31 @@ molecule_tests:
     role: sigcorp.core.openjdk
     vars:
       openjdk_major_version: 11
+
+  package_specs-empty:
+    role: sigcorp.core.package_specs
+    vars:
+      package_specs: []
+
+  package_specs-all-specs:
+    role: sigcorp.core.package_specs
+    vars:
+      package_specs:
+        - name: bash
+        - name: fail_family
+          family:
+            RedHat: bash
+            default: bash
+        - name: bad_distro
+          distro:
+            RedHat: bash
+            default: bash
+
+  rngd:
+  shell_utils:
+  skiring:
+
+  # Can't test in containers (yet)
+  # disable_firewall:
+  # hugepages:
+  # permissive_logrotate:

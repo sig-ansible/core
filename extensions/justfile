@@ -21,14 +21,19 @@ _mol_all CMD *ARGS:
 @create TEST_NAME *ARGS:
     just _mol create {{TEST_NAME}} {{ARGS}}
 
+alias prep := prepare
+
+@prepare TEST_NAME *ARGS:
+    just _mol prepare {{TEST_NAME}} {{ARGS}}
+
 @converge TEST_NAME *ARGS:
     just _mol converge {{TEST_NAME}} {{ARGS}}
 
 @converge-all *ARGS:
     just _mol_all converge {{ARGS}}
 
-@destroy TEST_NAME *ARGS:
-    just _mol destroy {{TEST_NAME}} {{ARGS}}
+@destroy *ARGS:
+    molecule destroy {{ARGS}}
 
 @check TEST_NAME *ARGS:
     just _mol check {{TEST_NAME}} {{ARGS}}
@@ -36,7 +41,9 @@ _mol_all CMD *ARGS:
 @check-all *ARGS:
     just _mol_all check {{ARGS}}
 
-@test TEST_NAME:
-    just destroy {{TEST_NAME}}
-    just _mol reset {{TEST_NAME}}
+@clean:
+    just destroy
+    molecule reset
+
+@test TEST_NAME: clean
     just check {{TEST_NAME}}
