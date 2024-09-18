@@ -8,33 +8,31 @@
         hosts: {}
         molecule: {}
   tasks:
+    - name: Create Dockerfile
+      ansible.builtin.template:
+        src: Dockerfile.j2
+        dest: "{{ molecule_ephemeral_directory }}/Dockerfile.{{ item.name }}"
+        mode: "0600"
+      loop: "{{ molecule_yml.platforms }}"
+
+    - name: Build Image
+      community.docker.docker_image_build:
+        name: molecule/{{ item.name }}:latest
+        dockerfile: Dockerfile.{{ item.name }}
+        path: "{{ molecule_ephemeral_directory }}"
+        rebuild: always
+      loop: "{{ molecule_yml.platforms }}"
+
     - name: Create a container
       community.docker.docker_container:
         name: "{{ item.name }}"
-        image: "{{ item.image }}"
+        image: molecule/{{ item.name }}:latest
         state: started
         command: sleep 1d
         log_driver: json-file
+        keep_volumes: false
       register: result
       loop: "{{ molecule_yml.platforms }}"
-
-    - name: Ensure Python3 is installed
-      community.docker.docker_container_exec:
-        container: "{{ item.name }}"
-        command: yum install -y python3
-        timeout: 300
-      loop: "{{ molecule_yml.platforms }}"
-
-    - name: Apply package updates
-      community.docker.docker_container_exec:
-        container: "{{ item.name }}"
-        command: yum upgrade -y
-        timeout: 300
-      loop: "{{ molecule_yml.platforms }}"
-
-    - name: Print some info
-      ansible.builtin.debug:
-        msg: "{{ result.results }}"
 
     - name: Fail if container is not running
       when: >

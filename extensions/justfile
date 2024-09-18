@@ -32,6 +32,12 @@ alias prep := prepare
 @converge-all *ARGS:
     just _mol_all converge {{ARGS}}
 
+@verify TEST_NAME *ARGS:
+    just _mol verify {{TEST_NAME}} {{ARGS}}
+
+@idempotence TEST_NAME *ARGS:
+    just _mol idempotence {{TEST_NAME}} {{ARGS}}
+
 @destroy *ARGS:
     molecule destroy {{ARGS}}
 
@@ -46,4 +52,13 @@ alias prep := prepare
     molecule reset
 
 @test TEST_NAME: clean
-    just check {{TEST_NAME}}
+    just converge {{TEST_NAME}}
+    just verify {{TEST_NAME}}
+    just idempotence {{TEST_NAME}}
+
+@test-all *ARGS:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+    for T in $(just list-tests); do
+      just test "$T" {{ARGS}}
+    done
