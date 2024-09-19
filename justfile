@@ -13,6 +13,9 @@ alias m := molecule
 @test:
     just molecule test-all
 
+@clean:
+    just molecule clean
+
 # Watch for file changes and re-run pre-commit checks
 watch-pre-commit *ARGS:
     watchexec pre-commit run -a

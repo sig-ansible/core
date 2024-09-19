@@ -1,0 +1,20 @@
+---
+##
+## We use the unified `jobsub_` prefix here instead of `jobsub_users_`
+##
+jobsub_banner_user: banner  # noqa: var-naming[no-role-prefix]
+jobsub_banner_group: "{{ jobsub_banner_user }}"  # noqa: var-naming[no-role-prefix]
+jobsub_banner_group_gid: "{{ jobsub_banner_user_uid }}"  # noqa: var-naming[no-role-prefix]
+
+jobsub_gurjobs_user: banjobs  # noqa: var-naming[no-role-prefix]
+jobsub_gurjobs_group: "{{ jobsub_gurjobs_user }}"  # noqa: var-naming[no-role-prefix]
+jobsub_gurjobs_group_gid: "{{ jobsub_gurjobs_user_uid }}"  # noqa: var-naming[no-role-prefix]
+
+jobsub_cleanaddress_enabled: false  # noqa: var-naming[no-role-prefix]
+jobsub_cleanaddress_user: clnaddr  # noqa: var-naming[no-role-prefix]
+jobsub_cleanaddress_group: "{{ jobsub_cleanaddress_user }}"  # noqa: var-naming[no-role-prefix]
+jobsub_cleanaddress_gid: "{{ jobsub_cleanaddress_user_uid }}"  # noqa: var-naming[no-role-prefix]
+
+jobsub_oracle_in_banner_group: true  # noqa: var-naming[no-role-prefix]
+
+jobsub_site_users: []  # noqa: var-naming[no-role-prefix]

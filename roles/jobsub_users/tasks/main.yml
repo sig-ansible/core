@@ -1,0 +1,74 @@
+---
+- name: Create banner group
+  ansible.builtin.group:
+    name: "{{ jobsub_banner_group }}"
+    gid: "{{ jobsub_banner_group_gid }}"
+  tags: osuser
+
+- name: Create banner user
+  ansible.builtin.user:
+    name: "{{ jobsub_banner_user }}"
+    uid: "{{ jobsub_banner_user_uid }}"
+    group: "{{ jobsub_banner_group }}"
+    shell: /bin/bash
+
+- name: Create gurjobs group
+  ansible.builtin.group:
+    name: "{{ jobsub_gurjobs_group }}"
+    gid: "{{ jobsub_gurjobs_group_gid }}"
+  tags: osuser
+
+- name: Create gurjobs user
+  ansible.builtin.user:
+    name: "{{ jobsub_gurjobs_user }}"
+    uid: "{{ jobsub_gurjobs_user_uid }}"
+    group: "{{ jobsub_gurjobs_group }}"
+    groups:
+      - "{{ jobsub_banner_group }}"
+    append: true
+  tags: osuser
+
+- name: Create CLEAN_Address group
+  ansible.builtin.group:
+    name: "{{ jobsub_cleanaddress_group }}"
+    gid: "{{ jobsub_cleanaddress_gid }}"
+  when: jobsub_cleanaddress_enabled
+  tags: osuser
+
+- name: Create CLEAN_Address user
+  ansible.builtin.user:
+    name: "{{ jobsub_cleanaddress_user }}"
+    uid: "{{ jobsub_cleanaddress_user_uid }}"
+    group: "{{ jobsub_cleanaddress_group }}"
+    groups:
+      - "{{ jobsub_banner_group }}"
+    append: true
+  when: jobsub_cleanaddress_enabled
+  tags: osuser
+
+- name: Add oracle to banner group
+  ansible.builtin.user:
+    name: "{{ oracle_user }}"
+    groups:
+      - "{{ jobsub_banner_group }}"
+    append: true
+  when: jobsub_oracle_in_banner_group
+  tags: osuser
+
+- name: Create site-specific groups
+  ansible.builtin.group:
+    name: "{{ item.group_name | default(item.name) }}"
+    gid: "{{ item.gid | default(item.uid) }}"
+  loop: "{{ jobsub_site_users }}"
+  tags: osuser
+
+- name: Create site-specific users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.group_name | default(item.name) }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    groups: "{{ item.groups | default(omit) }}"
+    append: "{{ item.append | default(True) }}"
+  loop: "{{ jobsub_site_users }}"
+  tags: osuser

@@ -15,6 +15,29 @@ molecule_tests:
         - sid: FAKE
           host: not.real
 
+  jobsub_users:
+    vars:
+      jobsub_banner_group: banner
+      jobsub_banner_group_gid: 921
+      jobsub_banner_user: banner
+      jobsub_banner_user_uid: 921
+      jobsub_gurjobs_user: banjobs
+      jobsub_gurjobs_user_uid: 931
+      jobsub_gurjobs_group: gurjobs
+      jobsub_gurjobs_group_gid: 932
+      jobsub_cleanaddress_enabled: true
+      jobsub_cleanaddress_user: cleanddr
+      jobsub_cleanaddress_user_uid: 941
+      jobsub_cleanaddress_group: ca
+      jobsub_cleanaddress_group_gid: 942
+      jobsub_oracle_in_banner_group: true
+      oracle_user: oracle
+      jobsub_site_users:
+        - name: someguy
+          uid: 1111
+          groups:
+            - wheel
+
   login_banner:
     vars:
       login_banner_text: Molecule

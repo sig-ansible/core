@@ -1,0 +1,68 @@
+---
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html
+argument_specs:
+  main:
+    options:
+      jobsub_banner_group:
+        required: true
+        type: str
+      jobsub_banner_group_gid:
+        required: true
+        type: int
+      jobsub_banner_user:
+        required: true
+        type: str
+      jobsub_banner_user_uid:
+        required: true
+        type: int
+      jobsub_gurjobs_group:
+        required: true
+        type: str
+      jobsub_gurjobs_group_gid:
+        required: true
+        type: int
+      jobsub_gurjobs_user:
+        required: true
+        type: str
+      jobsub_gurjobs_user_uid:
+        required: true
+        type: int
+
+      jobsub_cleanaddress_enabled:
+        type: bool
+      jobsub_cleanaddress_group:
+        type: str
+      jobsub_cleanaddress_group_gid:
+        type: int
+      jobsub_cleanaddress_user:
+        type: str
+      jobsub_cleanaddress_user_uid:
+        type: int
+
+      jobsub_oracle_in_banner_group:
+        type: bool
+      oracle_user:
+        type: str
+
+      jobsub_site_users:
+        type: list
+        options:
+          name:
+            required: true
+            type: str
+          uid:
+            required: true
+            type: int
+          gid:
+            type: int
+          group_name:
+            type: str
+          shell:
+            type: str
+            default: /bin/bash
+          groups:
+            type: list
+            elements: str
+          append:
+            type: bool
+            default: true
