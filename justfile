@@ -21,5 +21,6 @@ watch-pre-commit *ARGS:
     watchexec pre-commit run -a
 
 # Watch for file changes and run molecule converge
-watch-converge *ARGS:
-    watchexec just molecule converge-all {{ARGS}}
+watch-converge TEST *ARGS:
+    watchexec just molecule converge {{TEST}} {{ARGS}}
+alias wc := watch-converge

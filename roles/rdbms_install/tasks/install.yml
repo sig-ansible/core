@@ -1,0 +1,98 @@
+---
+- name: Create ORACLE_HOME directory
+  ansible.builtin.file:
+    path: "{{ rdbms_install_oracle_home }}"
+    state: directory
+    owner: oracle
+    group: oinstall
+    mode: "0755"
+  when: rdbms_install_use_zip
+
+- name: Unzip ORACLE_HOME
+  ansible.builtin.unarchive:
+    src: "{{ rdbms_install_installer }}"
+    dest: "{{ rdbms_install_oracle_home }}"
+    remote_src: true
+    creates: "{{ rdbms_install_oracle_home }}/{{ rdbms_install_zip_creates }}"
+    owner: oracle
+    mode: "0755"
+  when: rdbms_install_use_zip
+
+#
+# /tmp may be mounted with noexec. If this is the case then you can work around
+# the problem by setting rdbms_install_tmp_dir.
+#
+- name: Create oracle install temp directory
+  ansible.builtin.file:
+    path: "{{ rdbms_install_tmp_dir }}"
+    state: directory
+    owner: oracle
+    mode: "0755"
+  when: rdbms_install_tmp_dir is defined
+
+- name: Create response file directory
+  ansible.builtin.file:
+    path: "{{ rdbms_install_resp_dir }}"
+    state: directory
+    owner: oracle
+    group: oinstall
+    mode: "0755"
+
+- name: Create response file
+  ansible.builtin.template:
+    src: "rsp-{{ rdbms_install_version }}.j2"
+    dest: "{{ rdbms_install_resp_file }}"
+    owner: oracle
+    group: oinstall
+    mode: "0644"
+
+#
+# We ran into an issue with how Ansible treated become_user. This was solved
+# by updated run.sh and removing the become variables from the "all" group_vars.
+# These tasks were for troubleshooting.
+#
+# - command: whoami
+#   become: true
+#   become_user: oracle
+#   register: res
+#
+# - debug: var=res
+
+- name: Check for installer working directory
+  ansible.builtin.stat:
+    path: "{{ rdbms_install_installer_wd }}"
+  register: rdbms_install_installer_wd_stat
+
+- name: Fail if install directory is missing
+  ansible.builtin.fail:
+    msg: "Missing install directory: {{ rdbms_install_installer_wd }}"
+  when: not rdbms_install_installer_wd_stat.stat.exists
+
+- name: Print installer run info
+  ansible.builtin.debug:
+    msg:
+      install_command: "{{ rdbms_install_command }}"
+      installer_dir: "{{ rdbms_install_installer_wd }}"
+
+- name: Install RDBMS
+  ansible.builtin.shell: "{{ rdbms_install_command }}"  # noqa: command-instead-of-shell
+  args:
+    creates: "{{ rdbms_install_installer_creates }}"
+    chdir: "{{ rdbms_install_installer_wd }}"
+  become: true
+  become_user: oracle
+  environment:
+    TMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+    TEMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+    TMPDIR: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+  register: res
+  failed_when: res.rc not in [0, 6]
+
+- name: Dump the results of the installation step
+  ansible.builtin.debug:
+    var: res
+
+- name: Check for success message in installer output
+  ansible.builtin.fail:
+    msg: "Success message not found in installer output: {{ rdbms_install_success_stdout }}"
+  when: "'skipped' not in res.stdout and rdbms_install_success_stdout not in res.stdout"

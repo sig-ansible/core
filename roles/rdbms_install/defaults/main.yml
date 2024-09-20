@@ -1,0 +1,94 @@
+---
+rdbms_install_versions:
+  12.2.0.1:
+    short_ver: "12.2.0"
+    installer_creates: oraInst.loc
+    success_stdout: Successfully Setup
+    extra_args: "-showProgress"
+
+  client_12.2.0.1:
+    short_ver: "12.2.0"
+    installer_wd_suffix: /client
+    installer_creates: oraInst.loc
+    success_stdout: Successfully Setup
+    extra_args: "-noconfig -force -showProgress"
+    oracle_home_name: "client_1"
+
+  19.0.0:
+    short_ver: "19.0.0"
+    zip_creates: install/.img.bin
+    installer_creates: oraInst.loc
+    success_stdout: Successfully Setup
+
+  client_19.3.0:
+    short_ver: "19.3.0"
+    zip_name: LINUX.X64_193000_client_home.zip
+    zip_creates: instantclient/libclntshcore.so.19.1
+    installer_creates: oraInst.loc
+    extra_args: "-noconfig"
+    oracle_home_name: "client_1"
+    success_stdout: Successfully Setup
+    assume_distids:
+      RedHat_8: OEL8
+      CentOS_8: OEL8
+      OracleLinux_8: OEL8
+
+rdbms_install_ver_dict: "{{ rdbms_install_versions[rdbms_install_version] }}"
+rdbms_install_use_zip: "{{ rdbms_install_ver_dict.zip_creates is defined }}"
+rdbms_install_zip_creates: "{{ rdbms_install_ver_dict.zip_creates }}"
+rdbms_install_short_ver: "{{ rdbms_install_ver_dict.short_ver }}"
+
+rdbms_install_oracle_home_name: >-
+  {{ rdbms_install_ver_dict.oracle_home_name | default('dbhome_1') }}
+
+rdbms_install_oracle_home: >-
+  {{ oracle_product_dir }}/{{ rdbms_install_short_ver }}/{{ rdbms_install_oracle_home_name }}
+
+rdbms_install_resp_dir: "{{ oracle_base }}/resp"
+rdbms_install_resp_file: "{{ rdbms_install_resp_dir }}/{{ rdbms_install_version }}.rsp"
+rdbms_install_installer_name: "rdbms-{{ rdbms_install_version }}-linux-x64"
+
+rdbms_install_zip_name: >-
+  {{ rdbms_install_ver_dict.zip_name
+  | default('rdbms-' + rdbms_install_version + '-linux-x64.zip') }}
+
+rdbms_install_installer: >-
+  {{ stage_dir }}/database/{{ rdbms_install_use_zip
+    | ternary(rdbms_install_zip_name, rdbms_install_installer_name) }}
+
+rdbms_install_installer_creates: >-
+  {{ rdbms_install_oracle_home }}/{{ rdbms_install_ver_dict.installer_creates }}
+
+rdbms_install_installer_wd: >-
+  {{ rdbms_install_use_zip | ternary(rdbms_install_oracle_home, rdbms_install_installer)
+     + rdbms_install_ver_dict.installer_wd_suffix | default('') }}
+
+rdbms_install_debug_enabled: false
+rdbms_install_debug_opt: "{{ '-debug' if rdbms_install_debug_enabled else '' }}"
+
+rdbms_install_assume_distid: >-
+  {{ (rdbms_install_ver_dict.assume_distids|d({}))[ansible_distribution
+     + '_' + ansible_distribution_major_version]|d(None) }}
+
+rdbms_install_command_prepend: >-
+  {{ 'CV_ASSUME_DISTID=' + rdbms_install_assume_distid if rdbms_install_assume_distid else '' }}
+
+rdbms_install_command: >-
+  {{ rdbms_install_command_prepend }} ./runInstaller
+  -silent
+  -waitforcompletion
+  -responseFile {{ rdbms_install_resp_file }}
+  {{ rdbms_install_debug_opt }}
+  {{ rdbms_install_ver_dict.extra_args | default('') }}
+
+rdbms_install_success_stdout: "{{ rdbms_install_ver_dict.success_stdout }}"
+rdbms_install_lsnrctl_path: "{{ rdbms_install_oracle_home }}/bin/lsnrctl"
+rdbms_install_oraenv_path: /usr/local/bin/oraenv
+
+rdbms_install_root_scripts:
+  - script: "{{ oracle_inv_dir }}/orainstRoot.sh"
+    creates: /etc/oraInst.loc
+  - script: "{{ rdbms_install_oracle_home }}/root.sh"
+    creates: /etc/oratab
+
+rdbms_install_hugepages_enabled: false

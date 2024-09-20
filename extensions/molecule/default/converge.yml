@@ -18,7 +18,7 @@
     - name: "Compute role spec"
       ansible.builtin.set_fact:
         molecule_test_spec: >-
-          {{ {'role': 'sigcorp.core.' + molecule_test_name }
+          {{ {'role': 'sigcorp.core.' + molecule_test_name, 'stage': []}
              | combine(molecule_tests[molecule_test_name]) }}
 
     - name: "Set test vars"
@@ -26,7 +26,48 @@
         "{{ item.key }}": "{{ item.value }}"  # noqa: var-naming[no-jinja]
       loop: "{{ molecule_test_spec.vars | default({}) | dict2items }}"
 
-    - name: "Dump Test Info"
+    - name: Set stage directory
+      ansible.builtin.set_fact:
+        molecule_stage_dir: "{{ molecule_scenario_directory }}/stage"
+
+    - name: Create staging sub-directories
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ molecule_stage_dir }}/{{ item.dest | dirname }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ molecule_test_spec.stage }}"
+      loop_control:
+        label: "{{ molecule_stage_dir }}/{{ item.dest | dirname }}"
+      throttle: 1
+      when: item.dest is defined
+
+    - name: Download Staged Artifacts
+      delegate_to: localhost
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ molecule_stage_dir }}/{{ item.dest }}"
+        checksum: "{{ item.checksum | default(omit) }}"
+        decompress: false
+        mode: "0644"
+      loop: "{{ molecule_test_spec.stage }}"
+      loop_control:
+        label: "{{ item.dest }}"
+      throttle: 1
+
+    - name: Unarchive Staged Artifacts
+      delegate_to: localhost
+      ansible.builtin.unarchive:
+        src: "{{ molecule_stage_dir }}/{{ item.dest }}"
+        dest: "{{ molecule_stage_dir }}/{{ item.dest | dirname }}"
+        remote_src: true
+      loop: "{{ molecule_test_spec.stage }}"
+      loop_control:
+        label: "{{ item.dest }}"
+      when: item.unarchive | default(False)
+      throttle: 1
+
+    - name: Dump Test Info
       ansible.builtin.debug:
         msg:
           role: "{{ molecule_test_spec.role }}"

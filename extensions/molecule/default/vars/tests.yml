@@ -70,6 +70,44 @@ molecule_tests:
             RedHat: bash
             default: bash
 
+  rdbms_install-12201:
+    role: sigcorp.core.rdbms_install
+    vars: &rdbms_install-defaults
+      rdbms_install_version: 12.2.0.1
+      oracle_base: /u01/app/oracle
+      oracle_inv_dir: /u01/app/oraInventory
+      oracle_product_dir: /u01/app/oracle/product
+      oracle_uid: 811
+      oracle_gid: 811
+      oracle_os_groups:
+        oinstall: 821
+        dba: 831
+      stage_dir: /mnt/stage
+      tnsnames_entries:
+        - sid: FAKE
+          host: db.fake.xyz
+  rdbms_install-client_12201:
+    role: sigcorp.core.rdbms_install
+    stage:
+      ## TEMPORARY - Switch this to something authenticated before release
+      - url: http://m.oiu.tv/p1dCfU3T8p/oracle/rdbms_client/oracle_db_client_linux_amd64_12201.zip
+        dest: "database/rdbms-client_12.2.0.1-linux-x64/oracle_db_client_linux_amd64_12201.zip"
+        checksum: "sha1:49a798b357c87d07b8ff51679fa051fc317e2246"
+        unarchive: true
+    vars:
+      <<: *rdbms_install-defaults
+      rdbms_install_version: client_12.2.0.1
+  rdbms_install-1900:
+    role: sigcorp.core.rdbms_install
+    vars:
+      <<: *rdbms_install-defaults
+      rdbms_install_version: 19.0.0
+  rdbms_install-client_1930:
+    role: sigcorp.core.rdbms_install
+    vars:
+      <<: *rdbms_install-defaults
+      rdbms_install_version: client_19.3.0
+
   rngd:
   shell_utils:
   skiring:

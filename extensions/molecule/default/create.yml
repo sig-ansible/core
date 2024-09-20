@@ -23,6 +23,16 @@
         rebuild: always
       loop: "{{ molecule_yml.platforms }}"
 
+    - name: Set stage directory
+      ansible.builtin.set_fact:
+        molecule_stage_dir: "{{ molecule_scenario_directory }}/stage"
+
+    - name: Create stage directory
+      ansible.builtin.file:
+        path: "{{ molecule_stage_dir }}"
+        state: directory
+        mode: "0755"
+
     - name: Create a container
       community.docker.docker_container:
         name: "{{ item.name }}"
@@ -31,6 +41,12 @@
         command: sleep 1d
         log_driver: json-file
         keep_volumes: false
+        mounts:
+          - type: bind
+            source: "{{ molecule_stage_dir }}"
+            target: /mnt/stage
+            propagation: shared
+            read_only: true
       register: result
       loop: "{{ molecule_yml.platforms }}"
 

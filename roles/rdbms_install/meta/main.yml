@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: sigcorp.core.has_oracle
+  # - role: hugepages
+  #   when: rdbms_install_hugepages_enabled

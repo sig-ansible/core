@@ -1,0 +1,36 @@
+---
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_reuse_roles.html
+argument_specs:
+  main:
+    options:
+      oracle_base:
+        required: true
+        type: str
+        description: |
+          Base directory for all Oracle software installation.
+          Example: /u01/app/oracle
+
+      oracle_inv_dir:
+        required: true
+        type: str
+        description: |
+          Path to the Oracle inventory directory
+          Example: /u01/app/oraInventory
+
+      oracle_product_dir:
+        required: true
+        type: str
+        description: |
+          Path where all ORACLE_HOMEs are installed
+          Example: /u01/app/oracle/product
+
+      rdbms_install_version:
+        required: true
+        type: str
+
+      stage_dir:
+        required: true
+        type: str
+        description: |
+          Path where installation media is staged
+          Example: /mnt/shared/stage

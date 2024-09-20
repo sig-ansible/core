@@ -1,0 +1,84 @@
+---
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+  notify: recommend_reboot
+  when: rdbms_install_disable_selinux | default(False)
+
+- name: Create oracle directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: oracle
+    mode: "0755"
+  with_items:
+    - "{{ oracle_base }}"
+    - "{{ oracle_inv_dir }}"
+
+- name: Check for installation
+  ansible.builtin.stat:
+    path: "{{ rdbms_install_installer_creates }}"
+  register: res
+  tags: always
+
+- name: Perform installation
+  ansible.builtin.include_tasks: install.yml
+  when: not res.stat.exists
+  tags: always
+
+- name: Run oracle root scripts
+  ansible.builtin.command: "{{ item.script }}"
+  args:
+    creates: "{{ item.creates }}"
+  loop: "{{ rdbms_install_root_scripts }}"
+
+- name: Create non-SID entry in oratab
+  ansible.builtin.lineinfile:
+    path: /etc/oratab
+    regexp: "^DB:"
+    line: "DB:{{ rdbms_install_oracle_home }}:N"
+
+- name: Check for listenener
+  ansible.builtin.stat:
+    path: "{{ rdbms_install_lsnrctl_path }}"
+  register: res
+
+- name: Create listener entry in oratab
+  ansible.builtin.lineinfile:
+    path: /etc/oratab
+    regexp: "^LISTENER:"
+    line: "LISTENER:{{ rdbms_install_oracle_home }}:N"
+  when: res.stat.exists
+
+- name: Create oraenv.d directory
+  ansible.builtin.file:
+    path: /etc/oraenv.d
+    state: directory
+    mode: "0755"
+
+- name: Update oraenv script
+  ansible.builtin.lineinfile:
+    dest: "{{ rdbms_install_oraenv_path }}"
+    backup: true
+    line: 'if [ "$(ls -A /etc/oraenv.d)" ]; then for F in /etc/oraenv.d/*; do source $F; done; fi'
+    regexp: '#ANSIBLE'
+
+- name: Find kernel headers
+  ansible.builtin.find:
+    paths: /usr/lib/gcc
+    patterns: stddef.h
+    recurse: true
+  register: res
+
+- name: Compute rdbms_install_gcc_includes
+  ansible.builtin.set_fact:
+    rdbms_install_gcc_includes: "{{ res.files | map(attribute='path') | map('dirname') | list }}"
+
+- name: Configure precompilers
+  ansible.builtin.template:
+    src: pcscfg.cfg.j2
+    dest: "{{ rdbms_install_oracle_home }}/precomp/admin/pcscfg.cfg"
+    backup: true
+    owner: oracle
+    group: oinstall
+    mode: "644"

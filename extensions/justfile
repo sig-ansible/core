@@ -38,8 +38,11 @@ alias prep := prepare
 @idempotence TEST_NAME *ARGS:
     just _mol idempotence {{TEST_NAME}} {{ARGS}}
 
-@destroy *ARGS:
+destroy *ARGS:
     molecule destroy {{ARGS}}
+
+@recreate TEST_NAME *ARGS: destroy
+    just create {{TEST_NAME}} {{ARGS}}
 
 @check TEST_NAME *ARGS:
     just _mol check {{TEST_NAME}} {{ARGS}}
@@ -47,8 +50,8 @@ alias prep := prepare
 @check-all *ARGS:
     just _mol_all check {{ARGS}}
 
-@clean:
-    just destroy
+clean:
+    @just destroy
     molecule reset
 
 @test TEST_NAME: clean
