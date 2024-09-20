@@ -1,5 +1,42 @@
 ---
 dependencies:
   - role: sigcorp.core.has_oracle
+
+  - role: sigcorp.core.package_specs
+    vars:
+      package_specs:
+        - name: bc
+        - name: binutils
+        - name: elfutils-libelf
+        - name: elfutils-libelf-devel
+        - name: fontconfig-devel
+        - name: gcc
+        - name: glibc
+        - name: glibc-devel
+        - name: ksh
+        - name: libX11
+        - name: libXau
+        - name: libXi
+        - name: libXrender
+        - name: libXtst
+        - name: libaio
+        - name: libaio-devel
+        - name: libgcc
+        - name: libibverbs
+        - name: libnsl
+        - name: libnsl2
+        - name: librdmacm
+        - name: libstdc++
+        - name: libstdc++-devel
+        - name: libxcb
+        - name: libxcrypt-compat
+          distro_ver:
+            default:
+              "8": libxcrypt
+        - name: make
+        - name: smartmontools
+        - name: sysstat
+        - name: unzip
+
   # - role: hugepages
   #   when: rdbms_install_hugepages_enabled

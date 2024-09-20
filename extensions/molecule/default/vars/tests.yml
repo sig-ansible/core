@@ -72,6 +72,13 @@ molecule_tests:
 
   rdbms_install-12201:
     role: sigcorp.core.rdbms_install
+    stage:
+      ## TODO Switch this to something authenticated before release
+      - url: "http://m.oiu.tv/p1dCfU3T8p/oracle/rdbms/rdbms-12.2.0.1.0-linux-x86-64/RDMBS-Enterprise-12c-12.2.0.1.0-Linux-x64.zip"  # noqa: yaml[line-length]
+        dest: "database/rdbms-12.2.0.1-linux-x64/RDMBS-Enterprise-12c-12.2.0.1.0-Linux-x64.zip"
+        checksum: "sha1:12598250be536c9d074ae0eb2f7df4a9b463d0eb"
+        unarchive:
+          creates: "database/runInstaller"
     vars: &rdbms_install-defaults
       rdbms_install_version: 12.2.0.1
       oracle_base: /u01/app/oracle
@@ -86,27 +93,41 @@ molecule_tests:
       tnsnames_entries:
         - sid: FAKE
           host: db.fake.xyz
+
   rdbms_install-client_12201:
     role: sigcorp.core.rdbms_install
     stage:
-      ## TEMPORARY - Switch this to something authenticated before release
+      ## TODO Switch this to something authenticated before release
       - url: http://m.oiu.tv/p1dCfU3T8p/oracle/rdbms_client/oracle_db_client_linux_amd64_12201.zip
         dest: "database/rdbms-client_12.2.0.1-linux-x64/oracle_db_client_linux_amd64_12201.zip"
         checksum: "sha1:49a798b357c87d07b8ff51679fa051fc317e2246"
-        unarchive: true
+        unarchive:
+          creates: "database/runInstaller"
     vars:
       <<: *rdbms_install-defaults
       rdbms_install_version: client_12.2.0.1
+
   rdbms_install-1900:
     role: sigcorp.core.rdbms_install
     vars:
       <<: *rdbms_install-defaults
       rdbms_install_version: 19.0.0
+    stage:
+      ## TODO Switch this to something authenticated before release
+      - url: http://m.oiu.tv/p1dCfU3T8p/oracle/rdbms/rdbms-19.0.0-linux-x86-64/rdbms-19.0.0-linux-x64.zip  # noqa: yaml[line-length]
+        dest: "database/rdbms-19.0.0-linux-x64.zip"
+        checksum: "sha1:1f3aceffb3821464ed46e73a821cf07e5d2686e6"
+
   rdbms_install-client_1930:
     role: sigcorp.core.rdbms_install
     vars:
       <<: *rdbms_install-defaults
       rdbms_install_version: client_19.3.0
+    stage:
+      ## TODO Switch this to something authenticated before release
+      - url: https://s3.amazonaws.com/m.oiu.tv/p1dCfU3T8p/oracle/rdbms_client/LINUX.X64_193000_client_home.zip  # noqa: yaml[line-length]
+        dest: "database/LINUX.X64_193000_client_home.zip"
+        # checksum: "sha1:49a798b357c87d07b8ff51679fa051fc317e2246"
 
   rngd:
   shell_utils:

@@ -60,11 +60,12 @@
       ansible.builtin.unarchive:
         src: "{{ molecule_stage_dir }}/{{ item.dest }}"
         dest: "{{ molecule_stage_dir }}/{{ item.dest | dirname }}"
+        creates: "{{ molecule_stage_dir }}/{{ item.dest | dirname }}/{{ item.unarchive.creates }}"
         remote_src: true
       loop: "{{ molecule_test_spec.stage }}"
       loop_control:
         label: "{{ item.dest }}"
-      when: item.unarchive | default(False)
+      when: item.unarchive is defined
       throttle: 1
 
     - name: Dump Test Info

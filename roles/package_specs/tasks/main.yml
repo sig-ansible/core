@@ -2,7 +2,9 @@
 - name: Build package list
   ansible.builtin.debug:
     msg: >-
-      {{ (item.distro_ver[ansible_distribution] | default({}))[ansible_distribution_major_version]
+      {{ (item.distro_ver[ansible_distribution]
+           | default(item.distro_ver['default'])
+           | default({}))[ansible_distribution_major_version]
          | default((item.distro_ver[ansible_distribution] | default({}))['default'])
          | default(item.distro[ansible_distribution])
          | default(item.distro['default'])
@@ -11,6 +13,8 @@
          | default(item.name)
       }}
   loop: "{{ package_specs }}"
+  loop_control:
+    label: "{{ item.name }}"
   register: res
   tags: packages
 

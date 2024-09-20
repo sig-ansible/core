@@ -2,6 +2,7 @@
 rdbms_install_versions:
   12.2.0.1:
     short_ver: "12.2.0"
+    installer_wd_suffix: /database
     installer_creates: oraInst.loc
     success_stdout: Successfully Setup
     extra_args: "-showProgress"
