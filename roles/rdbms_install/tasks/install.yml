@@ -68,6 +68,15 @@
     msg: "Missing install directory: {{ rdbms_install_installer_wd }}"
   when: not rdbms_install_installer_wd_stat.stat.exists
 
+- name: Disable installer's swap space requirement
+  community.general.ini_file:
+    path: "{{ rdbms_install_installer_wd }}/install/oraparam.ini"
+    create: false
+    backup: true
+    option: SWAP_SPACE
+    state: absent
+  when: rdbms_install_disable_swap_requirement
+
 - name: Print installer run info
   ansible.builtin.debug:
     msg:

@@ -5,7 +5,8 @@
   notify: recommend_reboot
   when: rdbms_install_disable_selinux | default(False)
 
-- name: Create oracle directories
+- &oracle_directories
+  name: Create oracle directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -82,3 +83,7 @@
     owner: oracle
     group: oinstall
     mode: "644"
+
+# Directory permissions/ownership might have been changed by the installer.
+- name: Re-Assert directory permissions
+  <<: *oracle_directories

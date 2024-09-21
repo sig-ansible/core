@@ -24,6 +24,13 @@ argument_specs:
           Path where all ORACLE_HOMEs are installed
           Example: /u01/app/oracle/product
 
+      rdbms_install_disable_swap_requirement:
+        required: false
+        type: bool
+        default: false
+        description: |
+          When `true` the installer's swap requirement will be overridden.
+
       rdbms_install_version:
         required: true
         type: str

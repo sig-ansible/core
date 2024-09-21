@@ -93,6 +93,7 @@ molecule_tests:
       tnsnames_entries:
         - sid: FAKE
           host: db.fake.xyz
+      rdbms_install_disable_swap_requirement: true
 
   rdbms_install-client_12201:
     role: sigcorp.core.rdbms_install

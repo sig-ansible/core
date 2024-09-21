@@ -1,6 +1,6 @@
 ---
 rdbms_install_versions:
-  12.2.0.1:
+  12.2.0.1: &v12201
     short_ver: "12.2.0"
     installer_wd_suffix: /database
     installer_creates: oraInst.loc
@@ -8,10 +8,8 @@ rdbms_install_versions:
     extra_args: "-showProgress"
 
   client_12.2.0.1:
-    short_ver: "12.2.0"
+    <<: *v12201
     installer_wd_suffix: /client
-    installer_creates: oraInst.loc
-    success_stdout: Successfully Setup
     extra_args: "-noconfig -force -showProgress"
     oracle_home_name: "client_1"
 
@@ -93,3 +91,4 @@ rdbms_install_root_scripts:
     creates: /etc/oratab
 
 rdbms_install_hugepages_enabled: false
+rdbms_install_disable_swap_requirement: false
