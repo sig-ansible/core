@@ -75,6 +75,7 @@
     backup: true
     option: SWAP_SPACE
     state: absent
+    section: "Generic Prereqs"
   when: rdbms_install_disable_swap_requirement
 
 - name: Print installer run info
@@ -84,24 +85,41 @@
       installer_dir: "{{ rdbms_install_installer_wd }}"
 
 - name: Install RDBMS
-  ansible.builtin.shell: "{{ rdbms_install_command }}"  # noqa: command-instead-of-shell
-  args:
-    creates: "{{ rdbms_install_installer_creates }}"
-    chdir: "{{ rdbms_install_installer_wd }}"
-  become: true
-  become_user: oracle
-  environment:
-    TMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
-    TEMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
-    TMPDIR: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
-  register: res
-  failed_when: res.rc not in [0, 6]
+  block:
+    - name: Run installer
+      ansible.builtin.shell: "{{ rdbms_install_command }}"  # noqa: command-instead-of-shell
+      args:
+        creates: "{{ rdbms_install_installer_creates }}"
+        chdir: "{{ rdbms_install_installer_wd }}"
+      become: true
+      become_user: oracle
+      environment:
+        TMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+        TEMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+        TMPDIR: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+      register: res
+      failed_when: res.rc not in [0, 6]
 
-- name: Dump the results of the installation step
-  ansible.builtin.debug:
-    var: res
+    - name: Dump the results of the installation step
+      ansible.builtin.debug:
+        var: res
 
-- name: Check for success message in installer output
-  ansible.builtin.fail:
-    msg: "Success message not found in installer output: {{ rdbms_install_success_stdout }}"
-  when: "'skipped' not in res.stdout and rdbms_install_success_stdout not in res.stdout"
+    - name: Check for success message in installer output
+      ansible.builtin.fail:
+        msg: "Success message not found in installer output: {{ rdbms_install_success_stdout }}"
+      when: "'skipped' not in res.stdout and rdbms_install_success_stdout not in res.stdout"
+
+  rescue:
+    - name: Dump the results of the failed installer run
+      ansible.builtin.debug:
+        var: res
+
+    # TODO Check if the swap error actually occurred
+    - name: Recommend setting rdbms_install_disable_swap_requirement=true
+      ansible.builtin.debug:
+        msg: Recommend setting rdbms_install_disable_swap_requirement=true
+      when: not rdbms_install_disable_swap_requirement
+
+    - name: Abort due to installer failure
+      ansible.builtin.fail:
+        msg: The installer failed. Review the messages above.

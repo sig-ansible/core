@@ -46,7 +46,8 @@
             source: "{{ molecule_stage_dir }}"
             target: /mnt/stage
             propagation: shared
-            read_only: true
+            # TODO: We want this read-only but that breaks rdbms-install tests
+            # read_only: true
       register: result
       loop: "{{ molecule_yml.platforms }}"
 

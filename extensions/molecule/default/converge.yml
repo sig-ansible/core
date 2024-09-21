@@ -9,26 +9,31 @@
       ansible.builtin.set_fact:
         ansible_distribution: RedHat
       when: "'rhel' in inventory_hostname"
+      tags: always
 
     - name: Inject AWS facts
       ansible.builtin.set_fact:
         aws_region: us-east-1
       when: "'aws' in inventory_hostname"
+      tags: always
 
     - name: "Compute role spec"
       ansible.builtin.set_fact:
         molecule_test_spec: >-
           {{ {'role': 'sigcorp.core.' + molecule_test_name, 'stage': []}
              | combine(molecule_tests[molecule_test_name]) }}
+      tags: always
 
     - name: "Set test vars"
       ansible.builtin.set_fact:
         "{{ item.key }}": "{{ item.value }}"  # noqa: var-naming[no-jinja]
       loop: "{{ molecule_test_spec.vars | default({}) | dict2items }}"
+      tags: always
 
     - name: Set stage directory
       ansible.builtin.set_fact:
         molecule_stage_dir: "{{ molecule_scenario_directory }}/stage"
+      tags: always
 
     - name: Create staging sub-directories
       delegate_to: localhost
@@ -77,3 +82,4 @@
     - name: "Apply the role"
       ansible.builtin.include_role:
         name: "{{ molecule_test_spec.role }}"
+      tags: always
