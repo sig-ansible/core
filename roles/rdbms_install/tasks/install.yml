@@ -69,20 +69,23 @@
   when: not rdbms_install_installer_wd_stat.stat.exists
 
 - name: Disable installer's swap space requirement
-  community.general.ini_file:
-    path: "{{ rdbms_install_installer_wd }}/install/oraparam.ini"
-    create: false
-    backup: true
-    option: SWAP_SPACE
-    state: absent
-    section: "Generic Prereqs"
   when: rdbms_install_disable_swap_requirement
+  block:
+    - name: Remove "SWAP_SPACE" line from install/oraparam.ini
+      community.general.ini_file:
+        path: "{{ rdbms_install_oraparam_path }}"
+        create: false
+        backup: true
+        option: SWAP_SPACE
+        state: absent
+        section: "Generic Prereqs"
 
 - name: Print installer run info
   ansible.builtin.debug:
     msg:
       install_command: "{{ rdbms_install_command }}"
       installer_dir: "{{ rdbms_install_installer_wd }}"
+      CV_ASSUME_DISTID: "{{ rdbms_install_assume_distid }}"
 
 - name: Install RDBMS
   block:
@@ -97,6 +100,7 @@
         TMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
         TEMP: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
         TMPDIR: "{{ rdbms_install_tmp_dir | default('/tmp') }}"
+        CV_ASSUME_DISTID: "{{ rdbms_install_assume_distid | default(omit) }}"
       register: res
       failed_when: res.rc not in [0, 6]
 

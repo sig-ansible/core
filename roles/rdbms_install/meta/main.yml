@@ -7,6 +7,10 @@ dependencies:
       package_specs:
         - name: bc
         - name: binutils
+        - name: compat-openssl11
+          distro_ver:
+            default:
+              "8": SKIP
         - name: elfutils-libelf
         - name: elfutils-libelf-devel
         - name: fontconfig-devel
@@ -21,6 +25,7 @@ dependencies:
         - name: libXtst
         - name: libaio
         - name: libaio-devel
+        - name: libasan
         - name: libgcc
         - name: libibverbs
         - name: libnsl
@@ -28,12 +33,15 @@ dependencies:
         - name: librdmacm
         - name: libstdc++
         - name: libstdc++-devel
+        - name: libvirt-libs
         - name: libxcb
         - name: libxcrypt-compat
           distro_ver:
             default:
               "8": libxcrypt
         - name: make
+        - name: policycoreutils
+        - name: policycoreutils-python-utils
         - name: smartmontools
         - name: sysstat
         - name: unzip

@@ -119,6 +119,17 @@ molecule_tests:
         dest: "database/rdbms-19.0.0-linux-x64.zip"
         checksum: "sha1:1f3aceffb3821464ed46e73a821cf07e5d2686e6"
 
+  rdbms_install-1930:
+    role: sigcorp.core.rdbms_install
+    vars:
+      <<: *rdbms_install-defaults
+      rdbms_install_version: 19.3.0
+    stage:
+      ## TODO Switch this to something authenticated before release
+      - url: http://m.oiu.tv/p1dCfU3T8p/oracle/rdbms/rdbms-19.3.0-linux-x86-64/LINUX.X64_193000_db_home.zip  # noqa: yaml[line-length]
+        dest: "database/rdbms-19.3.0-linux-x64.zip"
+        checksum: "sha1:1f3aceffb3821464ed46e73a821cf07e5d2686e6"
+
   rdbms_install-client_1930:
     role: sigcorp.core.rdbms_install
     vars:
